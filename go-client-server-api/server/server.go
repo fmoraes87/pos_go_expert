@@ -27,10 +27,11 @@ func main() {
 
 	initDB()
 
+	log.Println("Servidor pronto para receber requisições")
+
 	http.HandleFunc("/cotacao", QuotationHandler)
 	http.ListenAndServe(":8080", nil)
 
-	log.Println("Servidor pronto para receber requisições")
 }
 
 func initDB() {
@@ -88,9 +89,9 @@ func processRequest(c *context.Context, w http.ResponseWriter, r *http.Request) 
 	quotation, err := getCurrentExchangeRate(c, quotationRequest)
 	if err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
-			errMsg := "A requisição excedeu o tempo limite"
+			errMsg := fmt.Sprintf("A requisição excedeu o tempo limite.: %v", err)
 			respondWithError(w, http.StatusRequestTimeout, errMsg)
-			log.Println(errMsg)
+			log.Fatalln(errMsg)
 		} else {
 			respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Erro interno no servidor: %v", err))
 		}
