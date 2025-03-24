@@ -1,0 +1,7 @@
+.env
+
+#Database
+data
+data/*.*
+
+*.txt
